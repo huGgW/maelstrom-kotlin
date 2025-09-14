@@ -19,6 +19,9 @@ plugins {
 
     // ktlint
     id("org.jlleitschuh.gradle.ktlint") version "13.1.0"
+
+    // Apply the application plugin to add support for building a CLI application in Java.
+    application
 }
 
 repositories {
@@ -42,9 +45,6 @@ dependencies {
     testImplementation(libs.junit.jupiter.engine)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-    // This dependency is exported to consumers, that is to say found on their compile classpath.
-    api(libs.commons.math3)
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -57,4 +57,8 @@ java {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
 }

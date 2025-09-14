@@ -1,13 +1,14 @@
 package org.huggw.maelstrom.message
 
 import kotlinx.serialization.Polymorphic
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+
+typealias NodeId = String
 
 @Serializable
 data class Message<B : MessageBody>(
-    val src: String,
-    val dst: String,
+    val src: NodeId? = null,
+    val dst: NodeId? = null,
     val body: B,
 )
 

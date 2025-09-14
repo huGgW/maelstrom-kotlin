@@ -13,6 +13,9 @@ import org.huggw.maelstrom.message.Message
 import org.huggw.maelstrom.message.MessageBody
 import java.io.BufferedReader
 import java.io.BufferedWriter
+import kotlin.concurrent.atomics.AtomicBoolean
+import kotlin.concurrent.atomics.AtomicReference
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.reflect.KClass
 
 class MaelstromServer internal constructor(
@@ -21,6 +24,9 @@ class MaelstromServer internal constructor(
 ) {
     private val reader: BufferedReader = System.`in`.bufferedReader()
     private val writer: BufferedWriter = System.`out`.bufferedWriter()
+
+    lateinit var nodeId: String
+    private set
 
     fun run() = runBlocking {
         val readCh = Channel<String>()
