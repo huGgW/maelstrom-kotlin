@@ -3,8 +3,45 @@
  */
 package org.huggw
 
-class Library {
-    fun someLibraryMethod(): Boolean {
-        return true
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.huggw.maelstrom.exception.PreconditionFailedMaelstromException
+import org.huggw.maelstrom.message.Message
+import org.huggw.maelstrom.message.MessageBody
+import org.huggw.maelstrom.server.MaelstromServer
+
+
+fun main() {
+    val server = MaelstromServer {
+        handler { msg: Message<TestBody> ->
+            if (msg.body.tt == "fail") {
+                throw PreconditionFailedMaelstromException("Failed as requested")
+            }
+
+            Message (
+                src = msg.dst,
+                dst = msg.src,
+                body = TestBody("response to ${msg.body.tt}"),
+            )
+
+            /*
+            normal handling
+            { "src": "n1", "dst": "n2", "body": { "type": "test", "tt": "hello" } }
+
+            fail body
+            { "src": "n1", "dst": "n2", "body": { "type": "test", "tt": "fail" } }
+             */
+        }
     }
+
+    server.run()
+}
+
+@Serializable
+@SerialName("test")
+data class TestBody(
+    val tt: String,
+): MessageBody {
+    override val msgId = null
+    override val inReplyTo = null
 }
